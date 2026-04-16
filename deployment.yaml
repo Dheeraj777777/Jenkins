@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: even-odd-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: even-odd
+  template:
+    metadata:
+      labels:
+        app: even-odd
+    spec:
+      containers:
+        - name: even-odd-container
+          image: even-odd-app:latest
+          imagePullPolicy: Never
