@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Dheeraj777777/Jenkins.git'
+            }
+        }
+
+        stage('Build & Test') {
+            steps {
+                bat 'mvn clean test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                bat 'mvn package'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                bat 'docker build --no-cache -t even-odd-app .'
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                bat 'docker rm -f even-odd-container || exit 0'
+                bat 'docker run -d --name even-odd-container even-odd-app'
+            }
+        }
+        stage('Check Files') {
+            steps {
+                bat 'dir'
+            }
+        }
+        stage('K8s Debug') {
+            steps {
+                bat 'kubectl get nodes'
+            }
+        }
+        stage('Kubernetes Deploy') {
+            steps {
+                bat 'kubectl apply -f deployment.yaml --validate=false'
+            }
+        }
+    }
+}
